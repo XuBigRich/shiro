@@ -56,13 +56,21 @@
 		非常重要
 		配置 哪些页面需要受保护
 		以及访问哪些页面需要的权限(类似于过滤器)
-		1）. anon 可以被匿名访问
-		2）.authc 必须认证（即登录）后才可以访问的页面
+		1). anon 可以被匿名访问
+		2). authc 必须认证（即登录）后才可以访问的页面
+		3). 格式  url = 拦截器[参数]
+		4). url使用ant风格模式 支持?,*,** 注意通配符 不包含分隔符 '/'  1. ？匹配一个字符   2. * 匹配0个或多个 字符串  3. ** 匹配路径中的零个或多个路径
+			例如：/admin?   匹配 /admin1 或/admin2  但不匹配  /admin 与 /admin/
+				/admin*   匹配 /admin1 或/admin12  或  /admin 但不匹配 /admin/1
+				/**   匹配  所有路径  /admin 或/admin/1  或/admin/1/2
+		5). URL的配置采取第一次匹配优先的方式  即： 如果 先配置了 /** = authc  再配置 /user.jsp = anon， 那么对于  user.jsp 页面的配置将不起作用 。他会先匹配/** 从而不读取user.jsp的配置
 		 -->
 		<property name="filterChainDefinitions">
 			<value>
 				/login.jsp=anon
-				/user.jsp = authc
+				/shiro/login=anon
+				/** = authc
+				/user.jsp = anon
 			</value>
 		</property>
 	</bean>
