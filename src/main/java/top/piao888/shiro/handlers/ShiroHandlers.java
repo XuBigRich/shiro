@@ -25,9 +25,9 @@ public class ShiroHandlers {
 			currentUser.login(token);
 		} 
 		// 若没有指定账户 则shiro将会抛出UnknownAccountException 异常
-		catch (UnknownAccountException e) {
-			System.out.println("没有指定的账户");
-		}
+//		catch (UnknownAccountException e) {
+//			System.out.println("没有指定的账户");
+//		}
 		// 若账户存在 ，但密码不匹配 则shiro将会抛出IncorrectCredentialsException 异常
 		catch (IncorrectCredentialsException e) {
 			System.out.println("密码不正确");
@@ -38,8 +38,8 @@ public class ShiroHandlers {
 		}
 		//所有异常认证的父类异常
 		catch (AuthenticationException e) {
-			System.out.println("账户被锁定");
+			System.out.println("登录失败："+ e.getMessage());
 		}
-		return "redirect:/list.jsp";
+		return "redirect:/index.jsp";
 	}
 }
