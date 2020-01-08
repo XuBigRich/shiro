@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<h2>What all not</h2>
+	<h2>List Page</h2>
 </body>
 </html>

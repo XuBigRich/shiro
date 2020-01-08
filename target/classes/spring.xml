@@ -22,6 +22,12 @@
         <!--		<property name="realm" ref="jdbcRealm" />-->
         <!--多个realm-->
         <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="fristRealm"/>
+                <ref bean="secondRealm"/>
+            </list>
+        </property>
         <!-- <property name="cacheManager" ref="cacheManager" /> -->
     </bean>
     <!-- 2.配置cacheManager 2.1需要加入ehcache的jar包 2.2 -->
@@ -31,11 +37,18 @@
             value="classpath:spring-cache.xml"></property>
     </bean> -->
     <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
-        <property name="realms">
+        <!-- 两套realm 应用场景:-->
+        <!-- 1. 在输入账户的时候 提示 ： 请输入 用户名 /手机号  系统会自动判定登录 同一个 账号-->
+        <!-- 2. 或其他 -->
+        <!-- 之所以把这个地方注释掉 是因为 读取授权信息 是从securityManager 中读取的  放在这里 没有意义 -->
+        <!-- <property name="realms">
             <list>
                 <ref bean="fristRealm"/>
                 <ref bean="secondRealm"/>
             </list>
+        </property> -->
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AllSuccessfulStrategy"/>
         </property>
     </bean>
     <!-- 3.配置Realm 3.1 直接配置实现了 org.apache.shiro.realm.Realm 接口的bean -->
@@ -91,16 +104,23 @@
                 /admin*   匹配 /admin1 或/admin12  或  /admin 但不匹配 /admin/1
                 /**   匹配  所有路径  /admin 或/admin/1  或/admin/1/2
         5). URL的配置采取第一次匹配优先的方式  即： 如果 先配置了 /** = authc  再配置 /user.jsp = anon， 那么对于  user.jsp 页面的配置将不起作用 。他会先匹配/** 从而不读取user.jsp的配置
-        6)logout 登出过滤器
+        6). logout 登出过滤器
          -->
-        <property name="filterChainDefinitions">
+        <!-- <property name="filterChainDefinitions">
             <value>
                 /login.jsp=anon
                 /shiro/login=anon
                 /shiro/logout=logout
+                /admin.jsp=roles[admin]
+                /user.jsp=roles[user]
                 /** = authc
                 /user.jsp = anon
             </value>
-        </property>
+        </property> -->
+        <!-- 数据库查询的方式 获取授权 -->
+        <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>
     </bean>
+    <!-- 配置一个bean,该bean实际上是一个Map,通过实例工厂方法的方式 -->
+    <bean name="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapBuilder" factory-method="builderFilterChainDefinitionMap"/>
+    <bean name="filterChainDefinitionMapBuilder" class="top.piao888.shiro.factory.FilterChainDefinitionMapBuilder"/>
 </beans>
