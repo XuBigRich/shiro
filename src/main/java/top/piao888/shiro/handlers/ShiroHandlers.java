@@ -23,6 +23,8 @@ public class ShiroHandlers {
 	@RequestMapping("/login")
 	public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
 		Subject currentUser =SecurityUtils.getSubject();
+		currentUser.isRemembered();//判断是否是通过 记住我的方式登录的
+		currentUser.isAuthenticated(); //判断是否是通过输入密码登陆的 （不保证准确需要再次确认 	）
 		UsernamePasswordToken token=new UsernamePasswordToken(username,password);
 		token.setRememberMe(true);
 		try {
