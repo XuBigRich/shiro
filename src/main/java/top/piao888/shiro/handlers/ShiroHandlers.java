@@ -1,24 +1,30 @@
 package top.piao888.shiro.handlers;
 
 
-import javax.annotation.Generated;
+import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import top.piao888.shiro.service.ShiroService;
 @Controller
 @RequestMapping("/shiro")
 public class ShiroHandlers {
+	@Autowired
+	private ShiroService shiroService;
 	@RequestMapping("/login")
 	public String login(@RequestParam("username") String username, @RequestParam("password") String password) {
 		Subject currentUser =SecurityUtils.getSubject();
+		currentUser.isRemembered();//判断是否是通过 记住我的方式登录的
+		currentUser.isAuthenticated(); //判断是否是通过输入密码登陆的 （不保证准确需要再次确认 	）
 		UsernamePasswordToken token=new UsernamePasswordToken(username,password);
 		token.setRememberMe(true);
 		try {
@@ -41,5 +47,11 @@ public class ShiroHandlers {
 			System.out.println("登录失败："+ e.getMessage());
 		}
 		return "redirect:/index.jsp";
+	}
+	@RequestMapping("/testsession")
+	public String testSession(HttpSession session) {
+		session.setAttribute("key", "session");
+		shiroService.testMethod();
+		return "redirect:/list.jsp";
 	}
 }
