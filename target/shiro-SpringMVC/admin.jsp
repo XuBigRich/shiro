@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-	<h2>do not have permission</h2>
+	<h2>Admin Page</h2>
 </body>
 </html>

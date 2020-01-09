@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="
 	http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-	http://www.springframework.org/schema/context
-	http://www.springframework.org/schema/context/spring-context-4.0.xsd
-	http://www.springframework.org/schema/mvc
-	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
 	">
     <!-- 在spring中配置shiro -->
     <!-- 1.配置securityManager！ -->
@@ -22,6 +15,12 @@
         <!--		<property name="realm" ref="jdbcRealm" />-->
         <!--多个realm-->
         <property name="authenticator" ref="authenticator"/>
+        <property name="realms">
+            <list>
+                <ref bean="fristRealm"/>
+                <ref bean="secondRealm"/>
+            </list>
+        </property>
         <!-- <property name="cacheManager" ref="cacheManager" /> -->
     </bean>
     <!-- 2.配置cacheManager 2.1需要加入ehcache的jar包 2.2 -->
@@ -31,11 +30,17 @@
             value="classpath:spring-cache.xml"></property>
     </bean> -->
     <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
-        <property name="realms">
+        <!-- 两套realm 应用场景:-->
+        <!-- 1. 在输入账户的时候 提示 ： 请输入 用户名 /手机号  系统会自动判定登录 同一个 账号-->
+        <!-- 2. 或其他 -->
+      <!--  <property name="realms">
             <list>
                 <ref bean="fristRealm"/>
                 <ref bean="secondRealm"/>
             </list>
+        </property>-->
+        <property name="authenticationStrategy">
+            <bean class="org.apache.shiro.authc.pam.AllSuccessfulStrategy"/>
         </property>
     </bean>
     <!-- 3.配置Realm 3.1 直接配置实现了 org.apache.shiro.realm.Realm 接口的bean -->
@@ -92,14 +97,17 @@
                 /**   匹配  所有路径  /admin 或/admin/1  或/admin/1/2
         5). URL的配置采取第一次匹配优先的方式  即： 如果 先配置了 /** = authc  再配置 /user.jsp = anon， 那么对于  user.jsp 页面的配置将不起作用 。他会先匹配/** 从而不读取user.jsp的配置
         6)logout 登出过滤器
+        7).roles[所属身份] 例如：roles[admin]
          -->
         <property name="filterChainDefinitions">
             <value>
                 /login.jsp=anon
                 /shiro/login=anon
                 /shiro/logout=logout
+                /admin.jsp =roles[admin]
                 /** = authc
                 /user.jsp = anon
+
             </value>
         </property>
     </bean>
