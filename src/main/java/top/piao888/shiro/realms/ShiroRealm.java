@@ -46,8 +46,12 @@ public class ShiroRealm extends AuthorizingRealm {
 //        3).realmName:当前realm 对象的name。调用父类的getName() 方法即可
 		String realmName = getName();
 //        SimpleAuthenticationInfo info=new SimpleAuthenticationInfo(principl,credentials,realmName);
-		// 4). 盐值 一般来说 MD5的盐值加密的 盐是唯一的
+		// 4). 盐值 一般来说 MD5的盐值加密的 盐是唯一的  此处的盐值为 username
 		ByteSource credentialsSalt = ByteSource.Util.bytes(username);
+		// 这个地方是 密码账号比对
+		/**
+		 *  前端查询出来的账户  ，数据库查出来的密码  ， 盐值  ，当前realm 对象的name
+		 */
 		SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(principl, credentials, credentialsSalt, realmName);
 		return info;
 	}

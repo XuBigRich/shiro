@@ -97,24 +97,16 @@
                 /admin*   匹配 /admin1 或/admin12  或  /admin 但不匹配 /admin/1
                 /**   匹配  所有路径  /admin 或/admin/1  或/admin/1/2
         5). URL的配置采取第一次匹配优先的方式  即： 如果 先配置了 /** = authc  再配置 /user.jsp = anon， 那么对于  user.jsp 页面的配置将不起作用 。他会先匹配/** 从而不读取user.jsp的配置
-<<<<<<< HEAD
         6)logout 登出过滤器
         7).roles[所属身份] 例如：roles[admin]
-=======
-        6). logout 登出过滤器
->>>>>>> b7a16c9327a5e7f1af1249e49287a3ed77e5aef7
          -->
         <!-- <property name="filterChainDefinitions">
             <value>
                 /login.jsp=anon
                 /shiro/login=anon
                 /shiro/logout=logout
-<<<<<<< HEAD
-                /admin.jsp =roles[admin]
-=======
                 /admin.jsp=roles[admin]
                 /user.jsp=roles[user]
->>>>>>> b7a16c9327a5e7f1af1249e49287a3ed77e5aef7
                 /** = authc
                 /user.jsp = anon
 
